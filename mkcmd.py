@@ -8,47 +8,39 @@ from language_map import get_language
 app = Typer()
 
 @app.command()
-def new(filename: str, prompt: str, dry_run: bool = Option(False, "--dry", help="Prints result instead of writing to file.")):
-  content = None
-  
-  filepath = os.path.abspath(filename)
-  
-  if not dry_run and os.path.isfile(filepath):
-    raise Exception(f"File {filepath} already exists")
+def new(prompt: str, out_file: str = Option(None, "--out-file", help="File to write the result to.")):
+    content = None
+    
+    cc = ChatCodeCraft(settings.OPENAI_API_KEY)
+    response = cc.new_script(prompt, get_language(out_file))
 
-  cc = ChatCodeCraft(settings.OPENAI_API_KEY)
-  response = cc.new_script(prompt, get_language(filename))
-
-  if dry_run:
-    print(response)
-    return
-
-  os.makedirs(os.path.dirname(filepath), exist_ok=True)
-  with open(filepath, 'w') as f:
-    print(response, file=f)
+    if out_file:
+        with open(out_file, 'w') as f:
+            print(response, file=f)
+    else:
+        print(response)
     
 
 @app.command()
-def update(filename: str, prompt: str, dry_run: bool = Option(False, "--dry", help="Prints result instead of writing to file.")):
-  content = None
-  
-  filepath = os.path.abspath(filename)
-  
-  if not os.path.isfile(filepath):
-    raise Exception(f"File {filepath} does not exist")
-  
-  with open(filepath, 'r') as f:
-    content = f.read()
+def update(in_file: str, prompt: str, out_file: str = Option(None, "--out-file", help="File to write the result to.")):
+    content = None
+    
+    filepath = os.path.abspath(in_file)
+    
+    if not os.path.isfile(filepath):
+        raise Exception(f"File {filepath} does not exist")
+    
+    with open(filepath, 'r') as f:
+        content = f.read()
 
-  cc = ChatCodeCraft(settings.OPENAI_API_KEY)
-  response = cc.update_script(prompt, get_language(filename), content)
+    cc = ChatCodeCraft(settings.OPENAI_API_KEY)
+    response = cc.update_script(prompt, get_language(in_file), content)
 
-  if dry_run:
-    print(response)
-    return
-
-  with open(filepath, 'w') as f:
-    print(response, file=f)
+    if out_file:
+        with open(out_file, 'w') as f:
+            print(response, file=f)
+    else:
+        print(response)
 
 if __name__ == "__main__":
-  app()
+    app()

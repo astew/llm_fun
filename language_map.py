@@ -18,4 +18,6 @@ _langdict = {
 }
 
 def get_language(filename):
+  if filename is None:
+    return "Python"
   return _langdict.get(filename.split('.')[-1], None)

@@ -1,7 +1,7 @@
 import os
 import typer
 from typer import Typer, Option
-from codecraft import CodeCraft, ChatCodeCraft
+from txt2cmd.Txt2Cmd import ChatTxt2Cmd
 from config import settings
 from language_map import get_language
 
@@ -11,7 +11,7 @@ app = Typer()
 def new(prompt: str, out_file: str = Option(None, "--out-file", help="File to write the result to.")):
     content = None
     
-    cc = ChatCodeCraft(settings.OPENAI_API_KEY)
+    cc = ChatTxt2Cmd(settings.OPENAI_API_KEY)
     response = cc.new_script(prompt, get_language(out_file))
 
     if out_file:
@@ -33,7 +33,7 @@ def update(in_file: str, prompt: str, out_file: str = Option(None, "--out-file",
     with open(filepath, 'r') as f:
         content = f.read()
 
-    cc = ChatCodeCraft(settings.OPENAI_API_KEY)
+    cc = ChatTxt2Cmd(settings.OPENAI_API_KEY)
     response = cc.update_script(prompt, get_language(in_file), content)
 
     if out_file:

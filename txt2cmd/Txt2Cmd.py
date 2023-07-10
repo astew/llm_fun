@@ -2,15 +2,13 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain import PromptTemplate
 
-import prompt.template as template
-import prompt.chat_template as chat_template
-from prompt.output_parser import CodeOutputParser
+from .prompt import template, chat_template
+from .prompt.output_parser import CodeOutputParser
 
-# Name was a chatGPT suggestion, rename this later
 
 # Use a user prompt to create or update a script
 # This version uses a normal completion model
-class CodeCraft(object):
+class Txt2Cmd(object):
 
   def __init__(self, openai_api_key = None):
 
@@ -35,7 +33,7 @@ class CodeCraft(object):
 
 
 # Same as CodeCraft, but uses a chat completion model
-class ChatCodeCraft(object):
+class ChatTxt2Cmd(object):
 
   def __init__(self, openai_api_key = None, debug = False):
 

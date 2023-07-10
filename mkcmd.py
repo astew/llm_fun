@@ -7,17 +7,38 @@ from language_map import get_language
 app = Typer()
 
 @app.command()
-def process_file(filename: str, prompt: str):
+def new(filename: str, prompt: str):
   content = None
-  path = os.path.join('gen', filename)
-  if os.path.isfile(path):
-    with open(path, 'r') as f:
-      content = f.read()
+  
+  filepath = os.path.abspath(filename)
+  
+  if os.path.isfile(filepath):
+    raise Exception(f"File {filepath} already exists")
 
   cc = CodeCraft(settings.OPENAI_API_KEY)
-  response = cc.run(prompt, get_language(filename), content)
+  response = cc.new_script(prompt, get_language(filename))
 
-  with open(path, 'w') as f:
+  os.makedirs(os.path.dirname(filepath), exist_ok=True)
+  with open(filepath, 'w') as f:
+    print(response, file=f)
+    
+
+@app.command()
+def update(filename: str, prompt: str):
+  content = None
+  
+  filepath = os.path.abspath(filename)
+  
+  if not os.path.isfile(filepath):
+    raise Exception(f"File {filepath} does not exist")
+  
+  with open(filepath, 'r') as f:
+    content = f.read()
+
+  cc = CodeCraft(settings.OPENAI_API_KEY)
+  response = cc.update_script(prompt, get_language(filename), content)
+
+  with open(filepath, 'w') as f:
     print(response, file=f)
 
 if __name__ == "__main__":

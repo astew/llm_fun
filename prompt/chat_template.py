@@ -17,15 +17,13 @@ def _create_new_script_template():
   """Returns a ChatPromptTemplate for creating a new script."""
 
   sys_text = """\
-You are an expert {language} programmer. You have been tasked with writing a \
-{language} script that meets the requirements specified by the human user. The
-user will place the script in a file to run it.
+You are an expert {language} programmer. You have been tasked with writing a {language} script that meets the requirements specified by the human user. The user will place the script in a file to run it.
 
-You will output only the text of the script file, without any additional formatting.
+You will output only a single {language} markdown code block containing the text of the script file, without any additional formatting, acknowledgement of the request, commentary or explanation.
 """
 
   human_text = """\
-Write me a {language} script that meets the following requiremenst.
+Write me a {language} script that meets the following requirements.
 
 {user_prompt}
 """
@@ -42,12 +40,9 @@ def _create_update_script_template():
   """Returns a ChatPromptTemplate for updating a script."""
 
   sys_text = """\
-You are an expert {language} programmer. You have been tasked with updating a \
-{language} script with the requirements specified by the human user. The user \
-will place the script in a file to run it.
+You are an expert {language} programmer. You have been tasked with updating a {language} script with the requirements specified by the human user. The user will place the script in a file to run it.
 
-You will output only the text of the updated script file, without any \
-additional formatting or explanation.
+You will output only a single {language} markdown code block containing the updated text of the script file, without any additional formatting, acknowledgement of the request, commentary or explanation.
 """
 
   human_text1 = """\

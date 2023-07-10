@@ -4,6 +4,7 @@ from langchain import PromptTemplate
 
 import prompt.template as template
 import prompt.chat_template as chat_template
+from prompt.output_parser import CodeOutputParser
 
 # Name was a chatGPT suggestion, rename this later
 
@@ -36,7 +37,7 @@ class CodeCraft(object):
 # Same as CodeCraft, but uses a chat completion model
 class ChatCodeCraft(object):
 
-  def __init__(self, openai_api_key = None):
+  def __init__(self, openai_api_key = None, debug = False):
 
     llm_kwargs = {
       "model": "gpt-3.5-turbo",
@@ -46,6 +47,8 @@ class ChatCodeCraft(object):
       llm_kwargs["openai_api_key"] = openai_api_key
     
     self.llm = ChatOpenAI(**llm_kwargs)
+    self.parser = CodeOutputParser()
+    self.debug = debug
       
 
   def new_script(self, user_prompt, language):
@@ -54,8 +57,12 @@ class ChatCodeCraft(object):
         user_prompt=user_prompt
     ).to_messages()
 
-    response = self.llm.predict_messages(prompt)
-    return response
+    if self.debug:
+      print("\n".join([x.content for x in prompt]))
+
+    response = self.llm.predict_messages(prompt).content
+    code_str = self.parser.parse(response)
+    return code_str
 
 
   def update_script(self, user_prompt, language, content):
@@ -65,6 +72,10 @@ class ChatCodeCraft(object):
         user_prompt=user_prompt
     ).to_messages()
 
-    response = self.llm.predict_messages(prompt)
-    return response
+    if self.debug:
+      print("\n".join([x.content for x in prompt]))
+
+    response = self.llm.predict_messages(prompt).content
+    code_str = self.parser.parse(response)
+    return code_str
 

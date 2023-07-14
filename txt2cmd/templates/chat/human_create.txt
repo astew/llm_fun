@@ -1,0 +1,4 @@
+Write me a {language} script that meets the following requirements.
+
+
+{user_prompt}

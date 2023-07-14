@@ -18,9 +18,7 @@ class Txt2Cmd:
             max_tokens=settings.OPENAI_MAX_TOKENS,
         )
 
-    def generate_script(
-        self, user_prompt: str, language: str, content: str = None
-    ) -> str:
+    def generate_script(self, user_prompt: str, language: str, content: str = None) -> str:
         """Templates user prompt for LLM and parses script from response using prediction model
 
         Args:
@@ -32,9 +30,7 @@ class Txt2Cmd:
             str: Generated code
         """
         prompt = (
-            template.update_script.format(
-                user_prompt=user_prompt, language=language, content=content
-            )
+            template.update_script.format(user_prompt=user_prompt, language=language, content=content)
             if content
             else template.new_script.format(user_prompt=user_prompt, language=language)
         )
@@ -53,9 +49,7 @@ class ChatTxt2Cmd:
         )
         self.parser = CodeOutputParser()
 
-    def generate_script(
-        self, user_prompt: str, language: str, content: str = None
-    ) -> str:
+    def generate_script(self, user_prompt: str, language: str, content: str = None) -> str:
         """Templates user prompt for LLM and parses script from response using Chat completion model
 
         Args:
@@ -68,11 +62,11 @@ class ChatTxt2Cmd:
         """
         prompt = (
             chat_template.update_script.format_prompt(
-                language=language, content=content, user_prompt=user_prompt
+                action="updating", language=language, content=content, user_prompt=user_prompt
             ).to_messages()
             if content
             else chat_template.new_script.format_prompt(
-                language=language, user_prompt=user_prompt
+                action="creating", language=language, user_prompt=user_prompt
             ).to_messages()
         )
 

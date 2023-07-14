@@ -1,0 +1,3 @@
+The old contents of the {language} script are below:
+---
+{content}
